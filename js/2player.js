@@ -1,6 +1,7 @@
 var origBoard;
-const huPlayer = 'O';
-const enPlayer = 'X';
+const oPlayer = 'O';
+const xPlayer = 'X';
+var currentPlayer = 0;
 const winCombos = [
 	[0, 1, 2],
 	[3, 4, 5],
@@ -27,8 +28,15 @@ function startGame() {
 
 function turnClick(square) {
 	if (typeof origBoard[square.target.id] == 'number') {
-		turn(square.target.id, huPlayer)
-		if (!checkWin(origBoard, huPlayer) || !checkWin(origBoard, enPlayer)  && !checkTie()) turn(square.target.id, enPlayer);
+		if (!checkWin(origBoard, oPlayer) && !checkWin(origBoard, xPlayer) && !checkTie()) {
+			if (currentPlayer == 0) {
+			turn(square.target.id, oPlayer)
+			currentPlayer = 1;
+			} else {
+				turn(square.target.id, xPlayer)
+				currentPlayer = 0;
+			}
+		}
 	}
 }
 
@@ -55,12 +63,12 @@ function checkWin(board, player) {
 function gameOver(gameWon) {
 	for (let index of winCombos[gameWon.index]) {
 		document.getElementById(index).style.backgroundColor =
-			gameWon.player == huPlayer ? "#00bfff" : "red";
+			gameWon.player == oPlayer ? "#00bfff" : "red";
 	}
 	for (var i = 0; i < cells.length; i++) {
 		cells[i].removeEventListener('click', turnClick, false);
 	}
-	declareWinner(gameWon.player == huPlayer ? "O Player win!" : "X Player win!");
+	declareWinner(gameWon.player == oPlayer ? "O Win!" : "X Win!");
 }
 
 function declareWinner(who) {
